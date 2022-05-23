@@ -1,2 +1,98 @@
-# CySec
-Repository of CyberSecurity scripts and architecture.
+## Automated ELK Stack Deployment
+
+The files in this repository were used to configure the network depicted below.
+
+!(Images/Project1.png)
+
+These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the ansible file may be used to install only certain pieces of it, such as Filebeat.
+
+  - filebeat-playbook.yml_
+
+This document contains the following details:
+- Description of the Topology
+- Access Policies
+- ELK Configuration
+  - Beats in Use
+  - Machines Being Monitored
+- How to Use the Ansible Build
+
+
+### Description of the Topology
+
+The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the D*mn Vulnerable Web Application.
+
+Load balancing ensures that the application will be highly reliable, in addition to restricting direct access to the network.
+- Load balancers primarily protect availability of the web servers. The jumpbox primarily protects integrity and confidentiality   of the data by ensuring that necessary remote access is through a protected and secured single point rather than directly open   to the internet.
+
+Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the services and system logs.
+- Filebeat watches for changes to system logs
+- Metricbeat records system and application metrics and sends error reports if the process dies
+
+The configuration details of each machine may be found below.
+
+| Name     | Function | IP Address | Operating System |
+|----------|----------|------------|------------------|
+| Jump Box | Gateway  | 10.1.0.4   | Linux            |
+| Web-1    | DVWA     | 10.1.0.5   | Linux            |
+| Web-2    | DVWA     | 10.1.0.6   | Linux            |
+| ELK      | ELK Stack| 10.2.0.4   | Linux            |
+
+### Access Policies
+
+The machines on the internal network are not exposed to the public Internet. 
+
+Only the Jump Box machine can accept connections from the Internet. Access to this machine is only allowed from the following IP addresses:
+- 70.180.5.96
+
+Machines within the network can only be accessed by the Jump Box.
+- The Jumpbox is located at public IP 20.242.4.232 with Private IP 10.1.0.4
+
+A summary of the access policies in place can be found in the table below.
+
+| Name    | Publically Accessible | Allowed IP Addresses |
+|---------|-----------------------|----------------------|
+| JumpBox | Yes                   | 70.180.5.96:22       |
+| JB2VN   | No                    | 10.1.0.4:22          |
+| HTTP    | Yes                   | Any:80               |
+| ELKS    | Yes                   | 70.180.5.96:5601     |
+
+### Elk Configuration
+
+Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because...
+- It allows for both quick and consistent deployment of configurations without manual error.
+
+The playbook implements the following tasks:
+- Installs Docker
+- Installs Pip3
+- Installs Docker Python Module
+- Configures a greater memory allowance required by docker
+- Installs ELK Docker Container and enables on boot
+
+The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
+
+!(Images/elkdockerps.png)
+
+### Target Machines & Beats
+This ELK server is configured to monitor the following machines:
+- 10.1.0.5 and 10.1.0.6
+
+We have installed the following Beats on these machines:
+- Filebeat and Metricbeat
+
+These Beats allow us to collect the following information from each machine:
+- Filebeat collects system log data from each DVWA server. Metricbeat collects metrics from the operating systems and services running on the DVWA servers.
+
+### Using the Playbook
+In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
+
+SSH into the control node and follow the steps below:
+- Copy the filebeat-config.yml file to the ansible container.
+- Update the filebeat-config.yml file to include the IP address of your ELK machine under the output.elasticsearch section and the setup.kibana section
+- Run the playbook, and navigate to filebeat installation page on the ELK server GUI to check that the installation worked as expected.
+
+Answer the following questions to fill in the blanks:_
+- _Which file is the playbook? Where do you copy it?_ filebeat-playbook.yml is the playbook and you need to copy it to the /etc/ansible folder of the ansible container
+- _Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on?_ Update the /etc/ansible/hosts file to include the IPs of the machines you want the playbook to run on. The machines you want to install elk on can be specified by creating an [elk] group while the machines you want to install beats on should be under the [webservers] group.
+- _Which URL do you navigate to in order to check that the ELK server is running? You should go to http://[your.VM.IP]:5601/app/kibana. Since I gave my ELK server a static public IP that would be 
+40.122.154.209:5601/app/kibana.
+
